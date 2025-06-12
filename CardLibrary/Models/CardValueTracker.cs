@@ -1,6 +1,8 @@
 ﻿using CardLibrary.Enums;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -9,8 +11,10 @@ namespace CardLibrary.Models
 {
     public class CardValueTracker
     {
-        public string Id { get; set; }
-        public int CardId { get; set; }
+        [Key]
+        public string Id { get; set; } = Guid.NewGuid().ToString();
+        [ForeignKey("Card")]
+        public string CardId { get; set; }
         public decimal MinPrice { get; set; }
         public decimal MaxPrice { get; set; }
         public decimal PercentageChange { get; set; }

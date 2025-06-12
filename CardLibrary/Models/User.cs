@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Reflection;
 using System.Text;
@@ -9,7 +10,8 @@ namespace CardLibrary.Models
 {
     public class User
     {
-        public string Id { get; set; }
+        [Key]
+        public string Id { get; set; } = Guid.NewGuid().ToString();
         public string FirstName { get; set; } = string.Empty;
         public string LastName { get; set; } = string.Empty;
         public string Email { get; set; } = string.Empty;
