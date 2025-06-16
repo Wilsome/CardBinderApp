@@ -12,12 +12,19 @@ namespace CardLibrary.Models
     {
         [Key]
         public string Id { get; set; } = Guid.NewGuid().ToString();
-        [ForeignKey("Card")]
 
+        [Required]
         public string GradingId { get; set; }  // ✅ Match ID type to CardBase’s `GradingId`
 
+        [Required]
+        [MaxLength(100)]
         public string CompanyName { get; set; } = string.Empty;
+
+        [Range(0, 10)]
         public int Grade { get; set; }
+
+        [Required]
+        [MaxLength(50)]
         public string CertificationNumber { get; set; } = string.Empty;
         public DateOnly GradedDate { get; set; }
 

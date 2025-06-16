@@ -12,10 +12,13 @@ namespace CardLibrary.Models
     {
         [Key]
         public string Id { get; set; } = Guid.NewGuid().ToString();
-        [ForeignKey("Card")]
+
+        [Required]
         public string CardId { get; set; }
+
+        [Range(0, double.MaxValue)]
         public decimal Value { get; set; }
-        public DateTime DateRecorded { get; set; }
+        public DateTime DateRecorded { get; set; } = DateTime.UtcNow;
 
         //Navigation
         public CardBase Card { get; set; }

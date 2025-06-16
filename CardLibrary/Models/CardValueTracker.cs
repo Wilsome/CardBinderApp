@@ -13,14 +13,19 @@ namespace CardLibrary.Models
     {
         [Key]
         public string Id { get; set; } = Guid.NewGuid().ToString();
-        [ForeignKey("Card")]
+
+        [Required]
         public string CardId { get; set; }
+
+        [Range(0, double.MaxValue)]
         public decimal MinPrice { get; set; }
+
+        [Range(0, double.MaxValue)]
         public decimal MaxPrice { get; set; }
         public decimal PercentageChange { get; set; }
-        public List<MarketSource> MarketSources { get; set; }
-        public DateTime LastUpdated { get; set; }
-        public List<CardPriceHistory> PriceHistory { get; set; }
+        public List<MarketSource> MarketSources { get; set; } = new();
+        public DateTime LastUpdated { get; set; } = DateTime.UtcNow;
+        public List<CardPriceHistory> PriceHistory { get; set; } = new();
 
         //navigation 
         public CardBase Card { get; set; }

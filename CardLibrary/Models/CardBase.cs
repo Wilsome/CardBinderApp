@@ -12,11 +12,19 @@ namespace CardLibrary.Models
     {
         [Key]
         public string Id { get; set; } = Guid.NewGuid().ToString();
-        public string Name { get; set; } = string.Empty;
-        public CardCondition Condition { get; set; }
-        public decimal Value { get; set; }
-        public DateTime CreatedAt { get; set; } = DateTime.Now;
 
+        [Required]
+        [MaxLength(100)]
+        public string Name { get; set; } = string.Empty;
+
+        [Required]
+        public CardCondition Condition { get; set; }
+
+        [Range(0, double.MaxValue)]
+        public decimal Value { get; set; }
+        public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
+
+        [Required]
         public string BinderId { get; set; }
         public CardBinder Binder { get; set; }
 
