@@ -1,4 +1,5 @@
-﻿using CardLibrary.Models;
+﻿using CardInfrastructure.Interfaces;
+using CardLibrary.Models;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -8,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace CardInfrastructure.Services
 {
-    public class UserService(CardDbContext context)
+    public class UserService(CardDbContext context) : IUserService
     {
         //field to store db connect
         private readonly CardDbContext _context = context;
@@ -19,7 +20,7 @@ namespace CardInfrastructure.Services
         /// <param name="firstname"></param>
         /// <param name="lastName"></param>
         /// <param name="email"></param>
-        public void CreateNewUser(string firstname, string lastName, string email) 
+        public async Task<User> CreateNewUserAsync(string firstname, string lastName, string email) 
         {
             User user = new()
             {
@@ -36,7 +37,8 @@ namespace CardInfrastructure.Services
             _context.Users.Add(user);
 
             //save db
-            _context.SaveChanges();
+            await _context.SaveChangesAsync();
+            return user;
         }
 
         /// <summary>
@@ -60,7 +62,7 @@ namespace CardInfrastructure.Services
             //validate
             if (user == null) 
             {
-                throw new Exception($"Id of: {id} wasn't found");
+                throw new KeyNotFoundException($"User with ID '{id}' not found.");
             }
 
             return user;
@@ -71,14 +73,14 @@ namespace CardInfrastructure.Services
         /// </summary>
         /// <param name="id"></param>
         /// <exception cref="Exception"></exception>
-        public async void DeleteUserById(string id) 
+        public async Task DeleteUserById(string id) 
         {
             User user = await GetUserById(id);
 
             //validate
             if (user == null) 
             {
-                throw new Exception($"Id of: {id} wasn't found");
+                throw new KeyNotFoundException($"User with ID '{id}' not found.");
             }
 
             //remove
@@ -95,13 +97,14 @@ namespace CardInfrastructure.Services
         /// <param name="lastName"></param>
         /// <param name="email"></param>
         /// <exception cref="Exception"></exception>
-        public async void UpdateUser(string id, string firstName, string lastName, string email) 
+        public async Task UpdateUser(string id, string firstName, string lastName, string email) 
         {
             User user = await GetUserById(id);
             //validate 
             if (user == null)
             {
-                throw new Exception($"Id of: {id} wasn't found");
+                throw new KeyNotFoundException($"User with ID '{id}' not found.");
+
             }
 
             user.FirstName = firstName;
