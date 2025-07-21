@@ -16,5 +16,6 @@ namespace CardInfrastructure.Interfaces
         Task<List<CardBinder>> GetAllBindersByCollectionIdAsync(string collectionId);
         Task CreateBinderAsync(string colllectionId, string name);
         Task UpdateBinderNameByIdAsync(string id, string updatedName);
+
     }
 }

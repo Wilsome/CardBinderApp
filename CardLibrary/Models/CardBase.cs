@@ -25,7 +25,7 @@ namespace CardLibrary.Models
         public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
 
         [Required]
-        public string BinderId { get; set; }
+        public string? BinderId { get; set; }
         public CardBinder Binder { get; set; }
 
         // Navigation Property for images
