@@ -1,4 +1,5 @@
-﻿using CardInfrastructure.Interfaces;
+﻿using CardInfrastructure.DTO;
+using CardInfrastructure.Interfaces;
 using CardLibrary.Models;
 using Microsoft.EntityFrameworkCore;
 using System;
@@ -20,24 +21,14 @@ namespace CardInfrastructure.Services
         /// <param name="firstname"></param>
         /// <param name="lastName"></param>
         /// <param name="email"></param>
-        public async Task<User> CreateNewUserAsync(string firstname, string lastName, string email) 
+        public async Task<User> CreateNewUserAsync(User user) 
         {
-            User user = new()
-            {
-                //id should be created by the Db
-                //created at property populated when object is extentiated 
-                //new collection as well. 
-                FirstName = firstname,
-                LastName = lastName,
-                Email = email
-
-            };
-
             //update db
             _context.Users.Add(user);
 
             //save db
             await _context.SaveChangesAsync();
+            
             return user;
         }
 
@@ -45,10 +36,11 @@ namespace CardInfrastructure.Services
         /// Return a list of all Users
         /// </summary>
         /// <returns></returns>
-        public async Task<List<User>> GetAllUsers() 
+        public async Task<List<User>> GetAllUsersAsync() 
         {
             return await _context.Users.ToListAsync();
         }
+
 
         /// <summary>
         /// Returns a single User by id
@@ -56,33 +48,20 @@ namespace CardInfrastructure.Services
         /// <param name="id"></param>
         /// <returns></returns>
         /// <exception cref="Exception"></exception>
-        public async Task<User> GetUserById(string id) 
+        public async Task<User> GetUserByIdAsync(string id) 
         {
             User user = await _context.Users.FindAsync(id);
-            //validate
-            if (user == null) 
-            {
-                throw new KeyNotFoundException($"User with ID '{id}' not found.");
-            }
-
+        
             return user;
         }
 
         /// <summary>
-        /// Delete a User by Id
+        /// Delete a User
         /// </summary>
         /// <param name="id"></param>
         /// <exception cref="Exception"></exception>
-        public async Task DeleteUserById(string id) 
+        public async Task DeleteUserAsync(User user) 
         {
-            User user = await GetUserById(id);
-
-            //validate
-            if (user == null) 
-            {
-                throw new KeyNotFoundException($"User with ID '{id}' not found.");
-            }
-
             //remove
             _context.Users.Remove(user);
             //save
@@ -97,20 +76,8 @@ namespace CardInfrastructure.Services
         /// <param name="lastName"></param>
         /// <param name="email"></param>
         /// <exception cref="Exception"></exception>
-        public async Task UpdateUser(string id, string firstName, string lastName, string email) 
+        public async Task UpdateUserAsync(User user) 
         {
-            User user = await GetUserById(id);
-            //validate 
-            if (user == null)
-            {
-                throw new KeyNotFoundException($"User with ID '{id}' not found.");
-
-            }
-
-            user.FirstName = firstName;
-            user.LastName = lastName;
-            user.Email = email;
-
             //save updates
             await _context.SaveChangesAsync();
 

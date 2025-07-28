@@ -9,10 +9,10 @@ namespace CardInfrastructure.Interfaces
 {
     public interface IUserService
     {
-        Task<User> CreateNewUserAsync(string firstName, string lastName, string email);
-        Task<List<User>> GetAllUsers();
-        Task<User> GetUserById(string id);
-        Task UpdateUser(string id, string firstName, string lastName, string email);
-        Task DeleteUserById(string id);
+        Task<User> CreateNewUserAsync(User user);
+        Task<List<User>> GetAllUsersAsync();
+        Task<User> GetUserByIdAsync(string id);
+        Task UpdateUserAsync(User user);
+        Task DeleteUserAsync(User user);
     }
 }

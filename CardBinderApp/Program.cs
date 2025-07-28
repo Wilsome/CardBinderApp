@@ -14,6 +14,8 @@ builder.Services.AddDbContext<CardDbContext>(Options =>
 Options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<ICollectionService, CollectionService>();
+builder.Services.AddScoped<ICardBinder, CardBinderService>();
+builder.Services.AddScoped<ICardService, CardService>();
 
 var app = builder.Build();
 
