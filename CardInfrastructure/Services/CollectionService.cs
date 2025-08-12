@@ -5,6 +5,7 @@ using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection.Metadata.Ecma335;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -15,38 +16,26 @@ namespace CardInfrastructure.Services
         //our db connection
         private readonly CardDbContext _context = context;
 
-        public async Task CreateCollectionAsync(string userId, string name, CollectionTheme theme)
+        public async Task CreateCollectionAsync(Collection collection)
         {
-            //pull the user
-            User user = await _context.Users.SingleOrDefaultAsync(u =>u.Id == userId);
-
-            //validate
-            if (user == null) 
-            {
-                throw new KeyNotFoundException($"User {userId} not found.");
-            }
-
-            //create the collection
-            Collection collection = new() 
-            {
-                Name = name,
-                Theme = theme,
-                UserId = userId
-            };
+            //validate 
+            if (collection == null) throw new ArgumentNullException(nameof(collection));
+          
+            //add
+            await _context.Collections.AddAsync(collection);
 
             //save
             await _context.SaveChangesAsync();
 
         }
 
-        public async Task DeleteCollectionById(string id)
+        public async Task<bool> DeleteCollectionByIdAsync(string id)
         {
             Collection collection = await _context.Collections.SingleOrDefaultAsync(c => c.Id == id);
 
-            //validate
             if (collection == null) 
             {
-                throw new KeyNotFoundException($"Collection id {id} not found.");
+                return false;
             }
 
             //remove from db
@@ -54,17 +43,26 @@ namespace CardInfrastructure.Services
 
             //save db 
             await _context.SaveChangesAsync();
+
+            return true;
+        }
+
+        public async Task<List<Collection>> GetAllCollectionsAsyn()
+        {
+            return await _context.Collections.ToListAsync();
         }
 
         public async Task<List<Collection>> GetAllCollectionsByUserId(string userId)
         {
             //pull user
-            User user = await _context.Users.SingleOrDefaultAsync(u => u.Id == userId);
+            //User user = await _context.Users.SingleOrDefaultAsync(u => u.Id == userId);
+            User user = await _context.Users
+                .Include(u => u.Collections)
+                .SingleOrDefaultAsync(u => u.Id == userId);
 
-            //validate 
             if (user == null) 
             {
-                throw new KeyNotFoundException($"User {userId} not found.");
+                return null;
             }
 
             //pull the collections
@@ -79,28 +77,17 @@ namespace CardInfrastructure.Services
         {
             Collection collection = await _context.Collections.SingleOrDefaultAsync(c => c.Id == id);
 
-            //validate
-            if (collection == null) throw new KeyNotFoundException($"Collection id {id} not found.");
-           
             return collection;
         }
 
-        public async Task UpdateCollectionById(string id, string name, CollectionTheme theme)
+        public async Task UpdateCollectionAsync(Collection collection)
         {
-            //pull collection
-            Collection collection = await GetCollectionById(id);
+            //validate 
+            if (collection == null) throw new ArgumentNullException(nameof(collection));
 
-            if (collection == null) 
-            {
-                throw new KeyNotFoundException($"Collect {id} not found.");
-            }
+             _context.Collections.Update(collection);
 
-           //collection found
-            collection.Name = name;
-            collection.Theme = theme;
-
-            
-            //save changes
+            //save
             await _context.SaveChangesAsync();
 
         }

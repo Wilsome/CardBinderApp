@@ -12,9 +12,10 @@ namespace CardInfrastructure.Interfaces
     {
         Task<Collection> GetCollectionById(string id);
         Task<List<Collection>> GetAllCollectionsByUserId(string userId);
-        Task CreateCollectionAsync(string userId, string name, CollectionTheme theme);
-        Task DeleteCollectionById(string id);
-        Task UpdateCollectionById(string id, string name, CollectionTheme theme);
+        Task CreateCollectionAsync(Collection collection);
+        Task<bool> DeleteCollectionByIdAsync(string id);
+        Task UpdateCollectionAsync(Collection collection);
+        Task<List<Collection>> GetAllCollectionsAsyn();
         
     }
 }
