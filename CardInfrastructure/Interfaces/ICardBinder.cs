@@ -1,4 +1,5 @@
-﻿using CardLibrary.Models;
+﻿using CardInfrastructure.DTO;
+using CardLibrary.Models;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using System;
 using System.Collections.Generic;
@@ -12,10 +13,11 @@ namespace CardInfrastructure.Interfaces
     {
         Task<CardBinder> GetBinderByIdAsync(string id);
         Task<CardBinder> GetBinderByNameAsync(string name);
-        Task DeleteBinderByNameAsync(string name);
+        Task<CardBinder> DeleteBinderAsync(CardBinder binder);
         Task<List<CardBinder>> GetAllBindersByCollectionIdAsync(string collectionId);
-        Task CreateBinderAsync(string colllectionId, string name);
-        Task UpdateBinderNameByIdAsync(string id, string updatedName);
+        Task<CardBinder> CreateBinderAsync(CreateBinderDto binderDto, Collection collection);
+        Task UpdateBinderNameByIdAsync(CardBinder binder, string updatedName);
+        Task<Collection> ValidateCollection(string collectionId);
 
     }
 }

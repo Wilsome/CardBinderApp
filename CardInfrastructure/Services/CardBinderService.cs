@@ -1,4 +1,5 @@
-﻿using CardInfrastructure.Interfaces;
+﻿using CardInfrastructure.DTO;
+using CardInfrastructure.Interfaces;
 using CardLibrary.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
@@ -15,22 +16,13 @@ namespace CardInfrastructure.Services
         //need db connection
         private readonly CardDbContext _context = context;
 
-        public async Task CreateBinderAsync(string collectionId, string name)
+        public async Task<CardBinder> CreateBinderAsync(CreateBinderDto binderDto, Collection collection)
         {
             CardBinder binder = new()
             {
-                Name = name,
-                CollectionId = collectionId,
+                Name = binderDto.Name,
+                CollectionId = binderDto.CollectionId,
             };
-
-            //pull the collection
-            Collection collection = await _context.Collections.SingleOrDefaultAsync(c => c.Id == collectionId);
-
-            //validate
-            if (collection == null) 
-            {
-                throw new KeyNotFoundException($"Collection {collectionId} not found.");
-            }
 
             //add binder to collection
             collection.Binders.Add(binder);
@@ -38,23 +30,19 @@ namespace CardInfrastructure.Services
             //save
             await _context.SaveChangesAsync();
 
+            return binder;
+
         }
 
-        public async Task DeleteBinderByNameAsync(string name)
+        public async Task<CardBinder> DeleteBinderAsync(CardBinder binder)
         {
-            CardBinder binder = await _context.Binders.SingleOrDefaultAsync(b => b.Name == name);
-
-            //validate
-            if (binder == null) 
-            {
-                throw new KeyNotFoundException($"{name} binder was not found.");
-            }
-
             //remove
             _context.Binders.Remove(binder);
 
             //save 
             await _context.SaveChangesAsync();
+
+            return binder;
 
         }
 
@@ -70,12 +58,6 @@ namespace CardInfrastructure.Services
         public async Task<CardBinder> GetBinderByIdAsync(string id)
         {
             CardBinder binder = await _context.Binders.SingleOrDefaultAsync(b => b.Id == id);
-
-            //validate
-            if (binder == null) 
-            {
-                throw new KeyNotFoundException($"Binder {id} not found.");
-            }
 
             return binder;
         }
@@ -93,21 +75,23 @@ namespace CardInfrastructure.Services
             return binder;
         }
 
-        public async Task UpdateBinderNameByIdAsync(string id, string updatedName)
+        public async Task UpdateBinderNameByIdAsync(CardBinder binder, string updatedName)
         {
-            CardBinder binder = await _context.Binders.SingleOrDefaultAsync(b => b.Id == id);
-
-            //validate
-            if (binder == null) 
-            {
-                throw new KeyNotFoundException($"Binder {id} not found.");
-            }
-
+            
             //update binder to new name
             binder.Name = updatedName;
 
             //save
             await _context.SaveChangesAsync();
+        }
+
+        public async Task<Collection> ValidateCollection(string collectionId) 
+        {
+            //pull the collection
+            Collection collection = await _context.Collections.SingleOrDefaultAsync(c => c.Id == collectionId);
+
+            //return
+            return collection;
         }
     }
 }
