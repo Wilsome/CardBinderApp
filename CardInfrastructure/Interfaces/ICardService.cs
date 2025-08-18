@@ -13,7 +13,7 @@ namespace CardInfrastructure.Interfaces
         Task CreateCardAsync(string name, CardCondition condition, string binderId, CardGrading? grading = null, CardImage? image = null);
         Task<CardBase> GetCardByIdAsync(string id);
         Task<List<CardBase>> GetCardsByBinderIdAsync(string binderId);
-        Task DeleteCardByIdAsync(string id);
+        Task<bool> DeleteCardByIdAsync(string id);
         Task UpdateCardNameByIdAsync(string CardId,  string name);
         Task RemoveCardFromBinderAsync(string binderId, string cardId);
         Task UpdateCardGradingByIdAsync(string cardId,  CardGrading grading);

@@ -35,31 +35,31 @@ namespace CardInfrastructure.Services
 
         }
 
-        public async Task DeleteCardByIdAsync(string id)
+        public async Task<bool> DeleteCardByIdAsync(string id)
         {
-            CardBase card = await _context.Cards.SingleOrDefaultAsync(c => c.Id == id);
+            CardBase card = await _context.Cards
+                    .Include(c => c.Binder)
+                    .SingleOrDefaultAsync(c => c.Id == id);
 
-            //validate
             if (card == null) 
             {
-                throw new KeyNotFoundException($"Card {id} not found.");
+                return false;
             }
+
+            //remove from binder
+            card.Binder.Cards.Remove(card);
 
             //remove
             _context.Cards.Remove(card);
             //save
             await _context.SaveChangesAsync();
+
+            return true;
         }
 
         public async Task<CardBase> GetCardByIdAsync(string id)
         {
             CardBase card = await _context.Cards.SingleOrDefaultAsync(c => c.Id == id);
-
-            //validate
-            if (card == null) 
-            {
-                throw new KeyNotFoundException($"Card {id} not found.");
-            }
 
             return card;
         }
