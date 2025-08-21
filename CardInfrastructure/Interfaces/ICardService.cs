@@ -1,4 +1,5 @@
-﻿using CardLibrary.Enums;
+﻿using CardInfrastructure.DTO;
+using CardLibrary.Enums;
 using CardLibrary.Models;
 using System;
 using System.Collections.Generic;
@@ -14,11 +15,9 @@ namespace CardInfrastructure.Interfaces
         Task<CardBase> GetCardByIdAsync(string id);
         Task<List<CardBase>> GetCardsByBinderIdAsync(string binderId);
         Task<bool> DeleteCardByIdAsync(string id);
-        Task UpdateCardNameByIdAsync(string CardId,  string name);
         Task RemoveCardFromBinderAsync(string binderId, string cardId);
-        Task UpdateCardGradingByIdAsync(string cardId,  CardGrading grading);
-        Task UpdateCardImageByIdAsync(string cardId, CardImage image);
         Task TransferCardToAnotherBinder(string cardId, string destinationBinderId);
+        Task<CardBase> UpdateCardAsync(CardBase card, UpdateCardDto cardDto);
         
     }
 }

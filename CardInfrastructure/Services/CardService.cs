@@ -1,4 +1,5 @@
-﻿using CardInfrastructure.Interfaces;
+﻿using CardInfrastructure.DTO;
+using CardInfrastructure.Interfaces;
 using CardInfrastructure.Models;
 using CardLibrary.Enums;
 using CardLibrary.Models;
@@ -47,8 +48,11 @@ namespace CardInfrastructure.Services
             }
 
             //remove from binder
-            card.Binder.Cards.Remove(card);
-
+            if (card.Binder != null)
+            {
+                card.Binder.Cards.Remove(card);
+            }
+            
             //remove
             _context.Cards.Remove(card);
             //save
@@ -109,58 +113,114 @@ namespace CardInfrastructure.Services
             await _context.SaveChangesAsync();
         }
 
-        public async Task UpdateCardGradingByIdAsync(string cardId, CardGrading grading)
-        {
-            //pull the card
-            CardBase card = await _context.Cards.SingleOrDefaultAsync(c =>c.Id==cardId);
-
-            //validate
-            if (card == null) 
-            {
-                throw new KeyNotFoundException($"Card {cardId} not found.");
-            }
-
-            //update CardGrading property
-            card.Grading = grading;
+        public async Task<CardBase> UpdateCardAsync(CardBase card, UpdateCardDto cardDto )
+        {   
+            //helper method calls
+            PatchScalarFields(card, cardDto);
+            PatchCardImage(card, cardDto.Image);
+            PatchCardGrading(card, cardDto.Grading);
 
             //save
             await _context.SaveChangesAsync();
+
+            return card;
         }
 
-        public async Task UpdateCardImageByIdAsync(string cardId, CardImage image)
+        /// <summary>
+        /// Will update CardBase basic fields
+        /// </summary>
+        /// <param name="card"></param>
+        /// <param name="dto"></param>
+        private void PatchScalarFields(CardBase card, UpdateCardDto dto)
         {
-            //pull the card
-            CardBase card = await _context.Cards.SingleOrDefaultAsync(c =>c.Id==cardId);
+            if (!string.IsNullOrWhiteSpace(dto.Name))
+                card.Name = dto.Name;
 
-            //validate
-            if (card == null) 
-            {
-                throw new KeyNotFoundException($"Card {cardId} not found.");
-            }
+            if (dto.Value.HasValue)
+                card.Value = dto.Value.Value;
 
-            //update Image property
-            card.Image = image;
+            if (dto.Condition.HasValue)
+                card.Condition = dto.Condition.Value;
 
-            //save
-            await _context.SaveChangesAsync();
+            if (!string.IsNullOrWhiteSpace(dto.BinderId))
+                card.BinderId = dto.BinderId;
+
+            if (!string.IsNullOrWhiteSpace(dto.GradingId))
+                card.GradingId = dto.GradingId;
         }
 
-        public async Task UpdateCardNameByIdAsync(string cardId, string name)
+        /// <summary>
+        /// Update a CardBase Image object
+        /// </summary>
+        /// <param name="card"></param>
+        /// <param name="imageDto"></param>
+        private void PatchCardImage(CardBase card, UpdateCardImageDto imageDto)
         {
-            //pull card
-            CardBase card = await _context.Cards.SingleOrDefaultAsync(c => c.Id == cardId);
+            if (imageDto == null) return;
 
-            //validate
-            if (card == null) 
+            if (card.Image != null)
             {
-                throw new KeyNotFoundException($"Card {cardId} not found.");
+                if (!string.IsNullOrWhiteSpace(imageDto.ImageUrl))
+                    card.Image.ImageUrl = imageDto.ImageUrl;
+
+                if (imageDto.IsUserUploaded.HasValue)
+                    card.Image.IsUserUploaded = imageDto.IsUserUploaded.Value;
+
+                if (imageDto.IsPlaceHolder.HasValue)
+                    card.Image.IsPlaceholder = imageDto.IsPlaceHolder.Value;
+
+                card.Image.UploadedAt = DateTime.UtcNow;
             }
-
-            //update name property
-            card.Name = name;
-
-            //save
-            await _context.SaveChangesAsync();
+            else
+            {
+                card.Image = new CardImage
+                {
+                    CardId = card.Id,
+                    Card = card,
+                    ImageUrl = imageDto.ImageUrl ?? string.Empty,
+                    IsUserUploaded = imageDto.IsUserUploaded ?? false,
+                    IsPlaceholder = imageDto.IsPlaceHolder ?? false,
+                    UploadedAt = DateTime.UtcNow
+                };
+            }
         }
+
+        /// <summary>
+        /// Update a CardBase Grading object
+        /// </summary>
+        /// <param name="card"></param>
+        /// <param name="gradingDto"></param>
+        private void PatchCardGrading(CardBase card, UpdateCardGradingDto gradingDto)
+        {
+            if (gradingDto == null) return;
+
+            if (card.Grading != null)
+            {
+                if (!string.IsNullOrWhiteSpace(gradingDto.CompanyName))
+                    card.Grading.CompanyName = gradingDto.CompanyName;
+
+                if (gradingDto.Grade.HasValue)
+                    card.Grading.Grade = gradingDto.Grade.Value;
+
+                if (!string.IsNullOrWhiteSpace(gradingDto.CertificationNumber))
+                    card.Grading.CertificationNumber = gradingDto.CertificationNumber;
+
+                if (gradingDto.GradedDate.HasValue)
+                    card.Grading.GradedDate = gradingDto.GradedDate.Value;
+            }
+            else
+            {
+                card.Grading = new CardGrading
+                {
+                    GradingId = Guid.NewGuid().ToString(),
+                    CompanyName = gradingDto.CompanyName ?? string.Empty,
+                    Grade = gradingDto.Grade ?? 0,
+                    CertificationNumber = gradingDto.CertificationNumber ?? string.Empty,
+                    GradedDate = gradingDto.GradedDate ?? DateOnly.FromDateTime(DateTime.UtcNow),
+                    Card = card
+                };
+            }
+        }
+
     }
 }

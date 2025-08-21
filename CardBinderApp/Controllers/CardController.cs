@@ -16,30 +16,47 @@ namespace CardBinderApp.Controllers
 
         //delete
         [HttpDelete("{cardId}")]
-        public async Task<IActionResult> DeleteCardByIdAsync(string cardId) 
-        {  
+        public async Task<IActionResult> DeleteCardByIdAsync(string cardId)
+        {
             bool deleted = await _cardService.DeleteCardByIdAsync(cardId);
 
-            if (!deleted) 
+            if (!deleted)
             {
                 return NotFound($"Card {cardId} not found.");
             }
 
             return NoContent();
-            
+
         }
 
-
         //patch
-
-        //get
-        [HttpGet("{cardId}")]
-        public async Task<IActionResult> GetCardByIdAsync(string cardId) 
+        [HttpPatch("{cardId}")]
+        public async Task<IActionResult> UpdateCardAsync(string cardId, [FromBody] UpdateCardDto cardDto) 
         {
+            //pull the card
             CardBase card = await _cardService.GetCardByIdAsync(cardId);
 
             //validate
             if (card == null) 
+            {
+                return NotFound($"Card with id {cardId} not found.");
+            }
+            
+            //update
+            await _cardService.UpdateCardAsync(card, cardDto);
+
+            //return 
+            return Ok(card);
+        }
+
+        //get
+        [HttpGet("{cardId}")]
+        public async Task<IActionResult> GetCardByIdAsync(string cardId)
+        {
+            CardBase card = await _cardService.GetCardByIdAsync(cardId);
+
+            //validate
+            if (card == null)
             {
                 return NotFound($"Card {cardId} not found.");
             }
@@ -48,5 +65,34 @@ namespace CardBinderApp.Controllers
         }
 
         //get all
+        [HttpGet("binder/{binderId}")]
+        public async Task<IActionResult> GetAllCardsByBinderIdAsync(string binderId) 
+        {
+            List<CardBase> cards = await _cardService.GetCardsByBinderIdAsync(binderId);
+
+            if (cards.Count == 0) 
+            {
+                return NotFound($"No cards found under Binder Id {binderId}");
+            }
+
+            //change list of CardBase to CartBaseDto
+            List<CardBaseDto> cardDtoList = new();
+
+            foreach (CardBase card in cards)
+            {
+                //add to new list
+                cardDtoList.Add(new CardBaseDto
+                {
+                    Name = card.Name,
+                    Value = card.Value,
+                    BinderId = binderId,
+                    Condition = card.Condition,
+                    GradingId = card.GradingId,
+                });
+            } 
+
+            return Ok(cardDtoList);
+        }
+
     }
 }
