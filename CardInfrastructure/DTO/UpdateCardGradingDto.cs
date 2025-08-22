@@ -12,5 +12,6 @@ namespace CardInfrastructure.DTO
         public int? Grade { get; set; }
         public string? CertificationNumber { get; set; }
         public DateOnly? GradedDate { get; set; }
+
     }
 }

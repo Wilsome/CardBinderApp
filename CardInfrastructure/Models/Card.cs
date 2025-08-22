@@ -9,6 +9,6 @@ namespace CardInfrastructure.Models
 {
     public class Card : CardBase
     {
-
+        
     }
 }

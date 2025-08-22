@@ -17,17 +17,26 @@ namespace CardInfrastructure.Services
         //connection to our database
         private readonly CardDbContext _context = context;
 
-        public async Task CreateCardAsync(string name, CardCondition condition, string binderId, CardGrading? grading = null, CardImage? image = null)
+        public async Task CreateCardAsync(CreateCardDto cardDto)
         {
-            //create a cardbase object
+            //create a card object
             Card card = new()
             {
-                Name = name,
-                Condition = condition,
-                BinderId = binderId,
-                Grading = grading,
-                Image = image
+               Name = cardDto.Name,
+               Value = cardDto.Value?? 0,
+               Condition = cardDto.Condition,
+               BinderId = cardDto.BinderId,
             };
+
+            if (cardDto.Image != null) 
+            {
+                CreateCardImage(card, cardDto.Image);
+            }
+
+            if (cardDto.Grading != null) 
+            {
+                CreateCardGrading(card, cardDto.Grading);
+            }
 
             await _context.Cards.AddAsync(card);    
             
@@ -220,6 +229,32 @@ namespace CardInfrastructure.Services
                     Card = card
                 };
             }
+        }
+
+        private void CreateCardImage(CardBase card, UpdateCardImageDto imageDto)
+        {
+            card.Image = new CardImage
+            {
+                CardId = card.Id,
+                Card = card,
+                ImageUrl = imageDto.ImageUrl ?? string.Empty,
+                IsUserUploaded = imageDto.IsUserUploaded ?? false,
+                IsPlaceholder = imageDto.IsPlaceHolder ?? false,
+                UploadedAt = DateTime.UtcNow
+            };
+        }
+
+        private void CreateCardGrading(CardBase card, UpdateCardGradingDto gradingDto)
+        {
+            card.Grading = new CardGrading
+            {
+                GradingId = Guid.NewGuid().ToString(),
+                CompanyName = gradingDto.CompanyName ?? string.Empty,
+                Grade = gradingDto.Grade ?? 0,
+                CertificationNumber = gradingDto.CertificationNumber ?? string.Empty,
+                GradedDate = gradingDto.GradedDate ?? DateOnly.FromDateTime(DateTime.UtcNow),
+                Card = card
+            };
         }
 
     }

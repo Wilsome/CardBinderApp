@@ -13,6 +13,20 @@ namespace CardBinderApp.Controllers
         private readonly ICardService _cardService = cardService;
 
         //create
+        [HttpPost]
+        public async Task<IActionResult> CreateCardAsync([FromBody] CreateCardDto cardDto) 
+        {
+            //validate state
+            if (!ModelState.IsValid) 
+            {
+                return BadRequest(ModelState);
+            }
+
+            //pass our Dto to our method
+            await _cardService.CreateCardAsync(cardDto);
+
+            return Ok();
+        }
 
         //delete
         [HttpDelete("{cardId}")]
