@@ -9,6 +9,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CardLibrary", "CardLibrary\
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CardInfrastructure", "CardInfrastructure\CardInfrastructure.csproj", "{EF75C966-7A44-45AF-8FD4-A96AC9CC677E}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CardBinderApp.Test", "..\CardBinderApp.Test\CardBinderApp.Test\CardBinderApp.Test.csproj", "{551C0BA0-1B22-AFA5-80B6-B83F4D519A16}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -27,6 +29,10 @@ Global
 		{EF75C966-7A44-45AF-8FD4-A96AC9CC677E}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{EF75C966-7A44-45AF-8FD4-A96AC9CC677E}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{EF75C966-7A44-45AF-8FD4-A96AC9CC677E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{551C0BA0-1B22-AFA5-80B6-B83F4D519A16}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{551C0BA0-1B22-AFA5-80B6-B83F4D519A16}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{551C0BA0-1B22-AFA5-80B6-B83F4D519A16}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{551C0BA0-1B22-AFA5-80B6-B83F4D519A16}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

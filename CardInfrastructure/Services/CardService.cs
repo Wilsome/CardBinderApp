@@ -17,7 +17,7 @@ namespace CardInfrastructure.Services
         //connection to our database
         private readonly CardDbContext _context = context;
 
-        public async Task CreateCardAsync(CreateCardDto cardDto)
+        public async Task<CardBase> CreateCardAsync(CreateCardDto cardDto)
         {
             //create a card object
             Card card = new()
@@ -42,6 +42,8 @@ namespace CardInfrastructure.Services
             
             //save
             await _context.SaveChangesAsync();
+
+            return card;
 
         }
 

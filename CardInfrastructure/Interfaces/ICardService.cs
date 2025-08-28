@@ -11,7 +11,7 @@ namespace CardInfrastructure.Interfaces
 {
     public interface ICardService
     {
-        Task CreateCardAsync(CreateCardDto cardDto);
+        Task<CardBase> CreateCardAsync(CreateCardDto cardDto);
         Task<CardBase> GetCardByIdAsync(string id);
         Task<List<CardBase>> GetCardsByBinderIdAsync(string binderId);
         Task<bool> DeleteCardByIdAsync(string id);

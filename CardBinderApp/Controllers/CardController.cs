@@ -23,9 +23,9 @@ namespace CardBinderApp.Controllers
             }
 
             //pass our Dto to our method
-            await _cardService.CreateCardAsync(cardDto);
+            CardBase card = await _cardService.CreateCardAsync(cardDto);
 
-            return Ok();
+            return Ok(card);
         }
 
         //delete
