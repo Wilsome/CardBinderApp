@@ -1,5 +1,6 @@
 ﻿using CardInfrastructure.DTO;
 using CardInfrastructure.Interfaces;
+using CardInfrastructure.Models;
 using CardLibrary.Models;
 using Microsoft.AspNetCore.Mvc;
 
@@ -82,7 +83,7 @@ namespace CardBinderApp.Controllers
         [HttpGet("binder/{binderId}")]
         public async Task<IActionResult> GetAllCardsByBinderIdAsync(string binderId) 
         {
-            List<CardBase> cards = await _cardService.GetCardsByBinderIdAsync(binderId);
+            List<Card> cards = await _cardService.GetCardsByBinderIdAsync(binderId);
 
             if (cards.Count == 0) 
             {

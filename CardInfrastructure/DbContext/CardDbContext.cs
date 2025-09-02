@@ -6,7 +6,7 @@ public class CardDbContext(DbContextOptions<CardDbContext> options) : DbContext(
 {
 
     // Define database tables (DbSets)
-    public DbSet<CardBase> Cards { get; set; }
+    public DbSet<Card> Cards { get; set; }
     public DbSet<CardBinder> Binders { get; set; }
     public DbSet<CardGrading> Gradings { get; set; }
     public DbSet<CardImage> Images { get; set; }

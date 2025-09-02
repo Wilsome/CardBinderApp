@@ -1,4 +1,5 @@
 ﻿using CardInfrastructure.DTO;
+using CardInfrastructure.Models;
 using CardLibrary.Enums;
 using CardLibrary.Models;
 using System;
@@ -12,8 +13,8 @@ namespace CardInfrastructure.Interfaces
     public interface ICardService
     {
         Task<CardBase> CreateCardAsync(CreateCardDto cardDto);
-        Task<CardBase> GetCardByIdAsync(string id);
-        Task<List<CardBase>> GetCardsByBinderIdAsync(string binderId);
+        Task<Card> GetCardByIdAsync(string id);
+        Task<List<Card>> GetCardsByBinderIdAsync(string binderId);
         Task<bool> DeleteCardByIdAsync(string id);
         Task RemoveCardFromBinderAsync(string binderId, string cardId);
         Task TransferCardToAnotherBinder(string cardId, string destinationBinderId);

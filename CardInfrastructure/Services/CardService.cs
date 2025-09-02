@@ -49,7 +49,7 @@ namespace CardInfrastructure.Services
 
         public async Task<bool> DeleteCardByIdAsync(string id)
         {
-            CardBase card = await _context.Cards
+            Card card = await _context.Cards
                     .Include(c => c.Binder)
                     .SingleOrDefaultAsync(c => c.Id == id);
 
@@ -72,16 +72,15 @@ namespace CardInfrastructure.Services
             return true;
         }
 
-        public async Task<CardBase> GetCardByIdAsync(string id)
+        public async Task<Card> GetCardByIdAsync(string id)
         {
-            CardBase card = await _context.Cards.SingleOrDefaultAsync(c => c.Id == id);
+            return await _context.Cards.SingleOrDefaultAsync(c => c.Id == id);
 
-            return card;
         }
 
-        public async Task<List<CardBase>> GetCardsByBinderIdAsync(string binderId)
+        public async Task<List<Card>> GetCardsByBinderIdAsync(string binderId)
         {
-            List<CardBase> cards = await _context.Cards
+            List<Card> cards = await _context.Cards
                 .Where(c => c.BinderId == binderId)
                 .ToListAsync();
 
