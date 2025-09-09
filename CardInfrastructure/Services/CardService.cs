@@ -75,7 +75,6 @@ namespace CardInfrastructure.Services
         public async Task<Card> GetCardByIdAsync(string id)
         {
             return await _context.Cards.SingleOrDefaultAsync(c => c.Id == id);
-
         }
 
         public async Task<List<Card>> GetCardsByBinderIdAsync(string binderId)
@@ -146,7 +145,7 @@ namespace CardInfrastructure.Services
             if (!string.IsNullOrWhiteSpace(dto.Name))
                 card.Name = dto.Name;
 
-            if (dto.Value.HasValue)
+            if (dto.Value.HasValue && dto.Value >= 0)
                 card.Value = dto.Value.Value;
 
             if (dto.Condition.HasValue)
@@ -155,8 +154,9 @@ namespace CardInfrastructure.Services
             if (!string.IsNullOrWhiteSpace(dto.BinderId))
                 card.BinderId = dto.BinderId;
 
-            if (!string.IsNullOrWhiteSpace(dto.GradingId))
-                card.GradingId = dto.GradingId;
+            // GradingId: allow explicit null to remove grading
+            card.GradingId = dto.GradingId;
+
         }
 
         /// <summary>
@@ -194,7 +194,7 @@ namespace CardInfrastructure.Services
                 };
             }
         }
-
+            
         /// <summary>
         /// Update a CardBase Grading object
         /// </summary>
