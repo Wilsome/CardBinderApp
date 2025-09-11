@@ -125,7 +125,7 @@ namespace CardInfrastructure.Services
         public async Task<CardBase> UpdateCardAsync(CardBase card, UpdateCardDto cardDto )
         {   
             //helper method calls
-            PatchScalarFields(card, cardDto);
+            await PatchScalarFields(card, cardDto);
             PatchCardImage(card, cardDto.Image);
             PatchCardGrading(card, cardDto.Grading);
 
@@ -140,7 +140,7 @@ namespace CardInfrastructure.Services
         /// </summary>
         /// <param name="card"></param>
         /// <param name="dto"></param>
-        private void PatchScalarFields(CardBase card, UpdateCardDto dto)
+        private async Task PatchScalarFields(CardBase card, UpdateCardDto dto)
         {
             if (!string.IsNullOrWhiteSpace(dto.Name))
                 card.Name = dto.Name;
@@ -152,7 +152,20 @@ namespace CardInfrastructure.Services
                 card.Condition = dto.Condition.Value;
 
             if (!string.IsNullOrWhiteSpace(dto.BinderId))
-                card.BinderId = dto.BinderId;
+            {
+                //pull binder from db
+                CardBinder binder = await _context.Binders.SingleOrDefaultAsync<CardBinder>(b => b.Id == dto.BinderId);
+                if (binder != null)
+                {
+                    card.BinderId = dto.BinderId;
+                }
+
+                else 
+                {
+                    throw new InvalidOperationException($"Binder ID '{dto.BinderId}' does not exist.");
+                }
+                
+            }
 
             // GradingId: allow explicit null to remove grading
             card.GradingId = dto.GradingId;
