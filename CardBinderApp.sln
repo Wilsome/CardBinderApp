@@ -9,7 +9,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CardLibrary", "CardLibrary\
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CardInfrastructure", "CardInfrastructure\CardInfrastructure.csproj", "{EF75C966-7A44-45AF-8FD4-A96AC9CC677E}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CardBinderApp.Test", "..\CardBinderApp.Test\CardBinderApp.Test\CardBinderApp.Test.csproj", "{551C0BA0-1B22-AFA5-80B6-B83F4D519A16}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CardBinderApp.Tests", "CardBinderApp.Tests\CardBinderApp.Tests.csproj", "{105BB784-3498-4219-8CB3-CF411575F7D0}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -29,10 +29,10 @@ Global
 		{EF75C966-7A44-45AF-8FD4-A96AC9CC677E}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{EF75C966-7A44-45AF-8FD4-A96AC9CC677E}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{EF75C966-7A44-45AF-8FD4-A96AC9CC677E}.Release|Any CPU.Build.0 = Release|Any CPU
-		{551C0BA0-1B22-AFA5-80B6-B83F4D519A16}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{551C0BA0-1B22-AFA5-80B6-B83F4D519A16}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{551C0BA0-1B22-AFA5-80B6-B83F4D519A16}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{551C0BA0-1B22-AFA5-80B6-B83F4D519A16}.Release|Any CPU.Build.0 = Release|Any CPU
+		{105BB784-3498-4219-8CB3-CF411575F7D0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{105BB784-3498-4219-8CB3-CF411575F7D0}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{105BB784-3498-4219-8CB3-CF411575F7D0}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{105BB784-3498-4219-8CB3-CF411575F7D0}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
