@@ -98,6 +98,7 @@ namespace CardBinderApp.Controllers
         }
 
         //get all by userId
+        [HttpGet("user/{userId}")]
         public async Task<IActionResult> GetAllCollectionsByUserId(string userId)
         {
             List<Collection> collections = await _collectionService.GetAllCollectionsByUserId(userId);
