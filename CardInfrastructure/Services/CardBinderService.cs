@@ -16,7 +16,7 @@ namespace CardInfrastructure.Services
         //need db connection
         private readonly CardDbContext _context = context;
 
-        public async Task<CardBinder> CreateBinderAsync(CreateBinderDto binderDto, Collection collection)
+        public async Task<UpdateBinderDto> CreateBinderAsync(CreateBinderDto binderDto)
         {
             CardBinder binder = new()
             {
@@ -24,14 +24,19 @@ namespace CardInfrastructure.Services
                 CollectionId = binderDto.CollectionId,
             };
 
-            //add binder to collection
-            collection.Binders.Add(binder);
+            //add binder to binders table
+            _context.Binders.Add(binder);
 
             //save
             await _context.SaveChangesAsync();
 
-            return binder;
-
+            //create new dto and return
+            return new UpdateBinderDto()
+            {
+                Id = binder.Id.ToString(),
+                Name = binderDto.Name,
+            };
+            
         }
 
         public async Task<CardBinder> DeleteBinderAsync(CardBinder binder)

@@ -15,7 +15,7 @@ namespace CardInfrastructure.Interfaces
         Task<CardBinder> GetBinderByNameAsync(string name);
         Task<CardBinder> DeleteBinderAsync(CardBinder binder);
         Task<List<CardBinder>> GetAllBindersByCollectionIdAsync(string collectionId);
-        Task<CardBinder> CreateBinderAsync(CreateBinderDto binderDto, Collection collection);
+        Task<UpdateBinderDto> CreateBinderAsync(CreateBinderDto binderDto);
         Task UpdateBinderNameByIdAsync(CardBinder binder, string updatedName);
         Task<Collection> ValidateCollection(string collectionId);
 

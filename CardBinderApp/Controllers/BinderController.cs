@@ -59,25 +59,21 @@ namespace CardBinderApp.Controllers
 
             //we get here collection is valid. 
             //create a new binder from our dto
-            CardBinder createdBinder = await _binderService.CreateBinderAsync(binder, collection);
+            UpdateBinderDto binderDto = await _binderService.CreateBinderAsync(binder);
 
-            return CreatedAtAction(
-                nameof(GetBinderByIdAsync),
-                new { binderId = createdBinder.Id },
-                createdBinder
-            );
+            return Ok(binderDto); 
 
         }
 
         //delete
         [HttpDelete("{binderId}")]
-        public async Task<IActionResult> DeleteBinderByIdAsync(string binderId) 
+        public async Task<IActionResult> DeleteBinderByIdAsync(string binderId)
         {
             //pull binder
             CardBinder binder = await _binderService.GetBinderByIdAsync($"{binderId}");
 
             //validate
-            if (binder == null) 
+            if (binder == null)
             {
                 return NotFound($"Binder {binderId} not found.");
             }
@@ -85,8 +81,14 @@ namespace CardBinderApp.Controllers
             //call method to do work from service
             await _binderService.DeleteBinderAsync(binder);
 
+            UpdateBinderDto returnDto = new()
+            {
+                Name = binder.Name,
+                Id = binder.Id,
+            };
+
             //return 
-            return AcceptedAtAction($"Binder {binder.Name} has been deleted");
+            return Accepted(returnDto);
         }
 
         //patch, partial replacement
