@@ -47,6 +47,11 @@ namespace CardInfrastructure.Services
             return true;
         }
 
+        public async Task<int> GetBinderCountForCollectionAsync(string collectionId)
+        {
+            return await _context.Binders.CountAsync(b => b.CollectionId == collectionId);
+        }
+
         public async Task<List<Collection>> GetAllCollectionsAsyn()
         {
             return await _context.Collections.ToListAsync();

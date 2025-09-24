@@ -4,6 +4,7 @@ using CardInfrastructure.Services;
 using CardLibrary.Enums;
 using CardLibrary.Models;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace CardBinderApp.Controllers
 {
@@ -47,7 +48,29 @@ namespace CardBinderApp.Controllers
                 return NotFound($"No collections found.");
             }
 
-            return Ok(collections);
+            //create a list of CollectionResponseDto
+            List<CollectionResponseDTO> collectionResponse = [];
+
+            foreach (Collection collection in collections) 
+            {
+                int binderCount = await _collectionService.GetBinderCountForCollectionAsync(collection.Id);
+
+                //create a response
+                CollectionResponseDTO dto = new()   
+                {
+                    Id = collection.Id,
+                    Name = collection.Name,
+                    Theme = collection.Theme.ToString(),
+                    EstimatedValue = collection.EstimatedValue,
+                    CreatedAt = collection.CreatedAt,
+                    BinderCount = binderCount
+                };
+
+                //add to list
+                collectionResponse.Add(dto);
+            }
+
+            return Ok(collectionResponse);
         }
 
         [HttpDelete]

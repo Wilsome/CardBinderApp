@@ -16,6 +16,7 @@ namespace CardInfrastructure.Interfaces
         Task<bool> DeleteCollectionByIdAsync(string id);
         Task UpdateCollectionAsync(Collection collection);
         Task<List<Collection>> GetAllCollectionsAsyn();
-        
+        Task<int> GetBinderCountForCollectionAsync(string id);
+
     }
 }

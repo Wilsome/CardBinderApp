@@ -111,15 +111,15 @@ namespace CardBinderApp.Controllers
             }
 
             //update properties
-            if (userDto.FirstName != null) 
+            if (!string.IsNullOrEmpty(userDto.FirstName)) 
             {
                 user.FirstName = userDto.FirstName;
             }
-            if (userDto.LastName != null) 
+            if (!string.IsNullOrEmpty(userDto.LastName)) 
             {
                 user.LastName = userDto.LastName;
             }
-            if (userDto.Email != null) 
+            if (!string.IsNullOrEmpty(userDto.Email)) 
             {
                 user.Email = userDto.Email;   
             }
