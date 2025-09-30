@@ -1,4 +1,4 @@
-﻿    using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using CardLibrary.Models;
 using CardInfrastructure.Models;
 
@@ -18,13 +18,17 @@ public class CardDbContext(DbContextOptions<CardDbContext> options) : DbContext(
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
-        modelBuilder.Entity<CardBase>().UseTptMappingStrategy(); // ✅ Enables TPT
+        //modelBuilder.Entity<CardBase>().UseTptMappingStrategy(); // ✅ Enables TPT
 
         modelBuilder.Entity<MagicTheGathering>().ToTable("MagicTheGatheringCards"); // ✅ Creates a separate table
 
-        modelBuilder.Entity<CardBase>()
-        .Property(c => c.Value)
-        .HasPrecision(18, 2); // ✅ Set precision and scale
+        modelBuilder.Entity<Card>().ToTable("Cards");
+
+        modelBuilder.Ignore<CardBase>();
+
+        //modelBuilder.Entity<CardBase>()
+        //.Property(c => c.Value)
+        //.HasPrecision(18, 2); // ✅ Set precision and scale
 
         modelBuilder.Entity<CardBinder>()
             .Property(c => c.EstimatedValue)

@@ -63,7 +63,8 @@ namespace CardBinderApp.Controllers
                     Theme = collection.Theme.ToString(),
                     EstimatedValue = collection.EstimatedValue,
                     CreatedAt = collection.CreatedAt,
-                    BinderCount = binderCount
+                    BinderCount = binderCount,
+                    UserId = collection.UserId.ToString(),
                 };
 
                 //add to list
@@ -145,6 +146,7 @@ namespace CardBinderApp.Controllers
                     Theme = collection.Theme.ToString(),
                     EstimatedValue = collection.EstimatedValue,
                     CreatedAt = collection.CreatedAt,
+                    UserId=collection.UserId
 
                 };
 

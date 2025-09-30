@@ -75,6 +75,7 @@ namespace CardInfrastructure.Services
         public async Task<Card> GetCardByIdAsync(string id)
         {
             return await _context.Cards.SingleOrDefaultAsync(c => c.Id == id);
+            
         }
 
         public async Task<List<Card>> GetCardsByBinderIdAsync(string binderId)

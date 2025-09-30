@@ -68,7 +68,7 @@ namespace CardBinderApp.Controllers
         [HttpGet("{cardId}")]
         public async Task<IActionResult> GetCardByIdAsync(string cardId)
         {
-            CardBase card = await _cardService.GetCardByIdAsync(cardId);
+            Card card = await _cardService.GetCardByIdAsync(cardId);
 
             //validate
             if (card == null)

@@ -15,5 +15,6 @@ namespace CardInfrastructure.DTO
         public decimal EstimatedValue { get; set; }
         public DateTime CreatedAt { get; set; }
         public int BinderCount { get; set; }
+        public string UserId { get; set; }
     }
 }
