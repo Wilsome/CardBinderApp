@@ -1,5 +1,6 @@
 ﻿using CardInfrastructure.DTO;
 using CardInfrastructure.Interfaces;
+using CardInfrastructure.Mapper;
 using CardInfrastructure.Models;
 using CardLibrary.Models;
 using Microsoft.AspNetCore.Mvc;
@@ -23,10 +24,21 @@ namespace CardBinderApp.Controllers
                 return BadRequest(ModelState);
             }
 
-            //pass our Dto to our method
-            CardBase card = await _cardService.CreateCardAsync(cardDto);
+            try
+            {
+                CardBase card = await _cardService.CreateCardAsync(cardDto);
+                return Ok(card);
+            }
+            catch (ArgumentException ex)
+            {
+                return BadRequest(new { error = ex.Message });
+            }
 
-            return Ok(card);
+
+            //pass our Dto to our method
+            //CardBase card = await _cardService.CreateCardAsync(cardDto);
+
+            //return Ok(card);
         }
 
         //delete
@@ -49,7 +61,7 @@ namespace CardBinderApp.Controllers
         public async Task<IActionResult> UpdateCardAsync(string cardId, [FromBody] UpdateCardDto cardDto) 
         {
             //pull the card
-            CardBase card = await _cardService.GetCardByIdAsync(cardId);
+            Card card = await _cardService.GetCardByIdAsync(cardId);
 
             //validate
             if (card == null) 
@@ -60,8 +72,23 @@ namespace CardBinderApp.Controllers
             //update
             await _cardService.UpdateCardAsync(card, cardDto);
 
+            //create Dto 
+            ResponseCardDto responseCardDto = new()
+            {
+                Id = card.Id,
+                Name = card.Name,
+                Condition = card.Condition.ToString(),
+                Value = card.Value,
+                BinderId = card.BinderId,
+                GradingId = card.GradingId,
+                CreatedAt = card.CreatedAt.ToString("yyyy-MM-dd"),
+                Image = CardDtoMapper.MapToImageDto(card.Image),
+                Grading = CardDtoMapper.MapToGradingDto(card.Grading)
+
+            };
+
             //return 
-            return Ok(card);
+            return Ok(responseCardDto);
         }
 
         //get

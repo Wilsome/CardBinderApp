@@ -26,7 +26,14 @@ namespace CardInfrastructure.Services
                Value = cardDto.Value?? 0,
                Condition = cardDto.Condition,
                BinderId = cardDto.BinderId,
+               
             };
+
+            bool binderExists = await _context.Binders.AnyAsync(b => b.Id == cardDto.BinderId);
+            if (!binderExists)
+            {
+                throw new ArgumentException($"BinderId '{cardDto.BinderId}' does not exist.");
+            }
 
             if (cardDto.Image != null) 
             {
@@ -42,6 +49,8 @@ namespace CardInfrastructure.Services
             
             //save
             await _context.SaveChangesAsync();
+
+            
 
             return card;
 
@@ -178,12 +187,47 @@ namespace CardInfrastructure.Services
         /// </summary>
         /// <param name="card"></param>
         /// <param name="imageDto"></param>
+        //private void PatchCardImage(CardBase card, UpdateCardImageDto imageDto)
+        //{
+        //    if (imageDto == null) return;
+
+        //    if (card.Image != null)
+        //    {
+        //        if (!string.IsNullOrWhiteSpace(imageDto.ImageUrl))
+        //            card.Image.ImageUrl = imageDto.ImageUrl;
+
+        //        if (imageDto.IsUserUploaded.HasValue)
+        //            card.Image.IsUserUploaded = imageDto.IsUserUploaded.Value;
+
+        //        if (imageDto.IsPlaceHolder.HasValue)
+        //            card.Image.IsPlaceholder = imageDto.IsPlaceHolder.Value;
+
+        //        card.Image.UploadedAt = DateTime.UtcNow;
+        //    }
+        //    else
+        //    {
+        //        // Create a new image and attach it safely
+        //        CardImage newImage = new CardImage
+        //        {
+        //            CardId = card.Id,
+        //            ImageUrl = imageDto.ImageUrl ?? string.Empty,
+        //            IsUserUploaded = imageDto.IsUserUploaded ?? false,
+        //            IsPlaceholder = imageDto.IsPlaceHolder ?? false,
+        //            UploadedAt = DateTime.UtcNow
+        //        };
+
+        //        // Attach the new image to the card
+        //        card.Image = newImage;
+        //    }
+
+        //}
         private void PatchCardImage(CardBase card, UpdateCardImageDto imageDto)
         {
             if (imageDto == null) return;
 
             if (card.Image != null)
             {
+                // Update existing image
                 if (!string.IsNullOrWhiteSpace(imageDto.ImageUrl))
                     card.Image.ImageUrl = imageDto.ImageUrl;
 
@@ -194,21 +238,47 @@ namespace CardInfrastructure.Services
                     card.Image.IsPlaceholder = imageDto.IsPlaceHolder.Value;
 
                 card.Image.UploadedAt = DateTime.UtcNow;
+
+                // Mark as modified
+                _context.Entry(card.Image).State = EntityState.Modified;
             }
             else
             {
-                card.Image = new CardImage
+                // Check if image already exists in DB (defensive)
+                var existingImage = _context.Images
+                    .AsNoTracking()
+                    .SingleOrDefault(i => i.CardId == card.Id);
+
+                if (existingImage != null)
                 {
-                    CardId = card.Id,
-                    Card = card,
-                    ImageUrl = imageDto.ImageUrl ?? string.Empty,
-                    IsUserUploaded = imageDto.IsUserUploaded ?? false,
-                    IsPlaceholder = imageDto.IsPlaceHolder ?? false,
-                    UploadedAt = DateTime.UtcNow
-                };
+                    // Attach and update
+                    existingImage.ImageUrl = imageDto.ImageUrl ?? string.Empty;
+                    existingImage.IsUserUploaded = imageDto.IsUserUploaded ?? false;
+                    existingImage.IsPlaceholder = imageDto.IsPlaceHolder ?? false;
+                    existingImage.UploadedAt = DateTime.UtcNow;
+
+                    _context.Images.Update(existingImage);
+                    card.Image = existingImage;
+                }
+                else
+                {
+                    // Safe to create new image
+                    var newImage = new CardImage
+                    {
+                        CardId = card.Id,
+                        ImageUrl = imageDto.ImageUrl ?? string.Empty,
+                        IsUserUploaded = imageDto.IsUserUploaded ?? false,
+                        IsPlaceholder = imageDto.IsPlaceHolder ?? false,
+                        UploadedAt = DateTime.UtcNow
+                    };
+
+                    _context.Images.Add(newImage);
+                    card.Image = newImage;
+                }
             }
         }
-            
+
+
         /// <summary>
         /// Update a CardBase Grading object
         /// </summary>
